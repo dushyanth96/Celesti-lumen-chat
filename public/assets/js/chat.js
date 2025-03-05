@@ -6,7 +6,8 @@ class ChatManager {
         this.chatMessages = document.getElementById('chatMessages');
         this.typingIndicator = document.getElementById('typingIndicator');
         this.clearHistoryBtn = document.getElementById('clearHistoryBtn');
-        this.selectedAvatar = this.getSelectedAvatar();
+        this.selectedAvatar = JSON.parse(localStorage.getItem('selectedAvatar')) || { id: 1, name: 'Luna', imageClass: 'luna-avatar' };
+        console.log("Selected avatar:", this.selectedAvatar); // Debugging
         
         // Settings elements
         this.settingsBtn = document.getElementById('settingsBtn');
@@ -113,26 +114,6 @@ class ChatManager {
         this.messageInput.style.height = (this.messageInput.scrollHeight) + 'px';
     }
 
-    getSelectedAvatar() {
-        const savedAvatar = localStorage.getItem('selectedAvatar');
-        console.log('Getting selected avatar from localStorage:', savedAvatar);
-        
-        if (savedAvatar) {
-            try {
-                return JSON.parse(savedAvatar);
-            } catch (e) {
-                console.error('Error parsing avatar data:', e);
-            }
-        }
-        
-        // Default avatar if none is selected
-        return {
-            id: 1,
-            name: 'Luna',
-            imageClass: 'luna-avatar'
-        };
-    }
-
     async sendMessage() {
         const message = this.messageInput.value.trim();
         if (!message) return;
@@ -190,23 +171,33 @@ class ChatManager {
     }
 
     async getAIResponse(message) {
+        const payload = {
+            avatarId: this.selectedAvatar.id,
+            userMessage: message
+        };
+        console.log("Sending payload:", payload); // Debugging
+
         const response = await fetch('/api/generate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                message,
-                avatar: this.selectedAvatar
-            }),
+            body: JSON.stringify(payload),
         });
 
         if (!response.ok) {
+            const errorData = await response.json(); // Log server error details
+            console.error("Server error:", errorData);
             throw new Error('Failed to get AI response');
         }
 
         const data = await response.json();
-        return data.response;
+        
+        if (!data.reply || typeof data.reply !== 'string') {
+            throw new Error('Unexpected response structure');
+        }
+
+        return data.reply;
     }
 
     addMessage(message, sender) {
@@ -317,5 +308,6 @@ class ChatManager {
 
 // Initialize chat when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    window.chatManager = new ChatManager();
+    const chatManager = new ChatManager();
+    console.log("ChatManager initialized:", chatManager); // Debugging
 });

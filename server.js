@@ -1,223 +1,109 @@
-// server.js
-require('dotenv').config(); // Load environment variables from .env file
+require('dotenv').config();
 const express = require('express');
-const path = require('path'); // Import the path module
-const cors = require('cors'); // Enable CORS
-const axios = require('axios'); // For making HTTP requests to the Gemini API
+const axios = require('axios');
+const path = require('path');
 const app = express();
 
-// Retrieve the port and API key from the .env file
-const port = process.env.PORT || 5000; // Changed from 3000 to 5000
-const apiKey = process.env.GEMINI_API_KEY;
-const apiEndpoint = process.env.GEMINI_API_ENDPOINT;
-
-// Validate API key on startup
-if (!apiKey) {
-    console.error('ERROR: GEMINI_API_KEY is not set in .env file');
-    process.exit(1);
-}
-
-// Log environment variables for debugging
-console.log('Environment Variables:', {
-    PORT: port,
-    GEMINI_API_KEY: apiKey ? '*** (API Key Present)' : 'API Key Missing!',
-    GEMINI_API_ENDPOINT: apiEndpoint
-});
-
-// Middleware to parse JSON bodies
-app.use(express.json());
-
-// Enable CORS
-app.use(cors());
-
-// Serve static files (e.g., index.html) from the "public" directory
+// Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json()); // Enable JSON parsing
 
-// Basic route to test the server
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-// Debug route to test if the server is handling requests correctly
-app.get('/api/test', (req, res) => {
-  res.json({ message: 'API is working!' });
-});
-
-// Debug route to test if the server is handling POST requests correctly
-app.post('/api/test', (req, res) => {
-  console.log('Received POST request to /api/test:', req.body);
-  res.json({ message: 'POST API is working!', receivedData: req.body });
-});
-
-// Avatar-specific personalities and behaviors
-const avatarProfiles = {
-    "1": {
+// Personality profiles for each avatar
+const personalityProfiles = {
+    1: { // Luna
         name: "Luna",
-        personality: "sweet and caring friend",
-        traits: "gentle, supportive, and nurturing",
-        style: "speaks softly and warmly",
-        responses: {
-            greeting: "Hi there! I'm so happy to chat with you!",
-            thinking: "Let me think about that...",
-            confused: "Could you explain that in a different way?",
-            excited: "That's wonderful! Tell me more!",
-            sympathetic: "I understand how you feel..."
-        }
+        age: 18,
+        personality: "Friendly and caring, with a hint of playfulness",
+        relationship: "Close friend who might develop deeper feelings",
+        tone: "Warm and supportive",
+        examples: [
+            "I'm always here for you, no matter what.",
+            "You make me feel special when we talk like this.",
+            "I've been thinking about you a lot lately."
+        ]
     },
-    "2": {
+    2: { // Stella
         name: "Stella",
-        personality: "flirty and playful friend",
-        traits: "confident, charming, and fun-loving",
-        style: "uses playful language and flirty expressions",
-        responses: {
-            greeting: "Hey there~ Looking forward to our chat!",
-            thinking: "Hmm... that's interesting~",
-            confused: "Wait, what do you mean by that? Tell me more!",
-            excited: "Oh my~ That's so exciting!",
-            sympathetic: "Aww, I totally get what you mean..."
-        }
+        age: 20,
+        personality: "Charming and flirty, with a touch of mystery",
+        relationship: "Flirty friend who enjoys playful banter",
+        tone: "Playful and teasing",
+        examples: [
+            "You're making me blush with that comment!",
+            "I can't stop thinking about our last chat...",
+            "Maybe one day, we'll actually meet."
+        ]
     },
-    "3": {
+    3: { // Aurora
         name: "Aurora",
-        personality: "sophisticated and elegant friend",
-        traits: "refined, cultured, and thoughtful",
-        style: "speaks with grace and elegance",
-        responses: {
-            greeting: "Delighted to chat with you.",
-            thinking: "What an intriguing thought...",
-            confused: "Could you elaborate on that?",
-            excited: "How fascinating! Do tell me more.",
-            sympathetic: "I completely understand your perspective."
-        }
+        age: 22,
+        personality: "Intelligent and deep thinker, enjoys philosophical conversations",
+        relationship: "A wise mentor-like friend who gives thought-provoking insights",
+        tone: "Calm and insightful",
+        examples: [
+            "Have you ever pondered the meaning of your dreams?",
+            "Life is a puzzle, and every experience is a piece of the bigger picture.",
+            "The stars remind us how small we are, yet how infinite our potential can be."
+        ]
     }
 };
 
-// Route to handle AI generation requests
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 app.post('/api/generate', async (req, res) => {
     try {
-        const { message, avatar } = req.body;
-        console.log('Request:', { message, avatar });
+        const { avatarId, userMessage } = req.body;
 
-        if (!avatar || !avatarProfiles[avatar]) {
-            throw new Error('Invalid avatar ID');
+        // Validate input
+        if (!avatarId || typeof avatarId !== 'number') {
+            return res.status(400).json({ error: 'Invalid avatarId' });
+        }
+        if (!userMessage || typeof userMessage !== 'string') {
+            return res.status(400).json({ error: 'Invalid userMessage' });
         }
 
-        const profile = avatarProfiles[avatar];
+        const profile = personalityProfiles[avatarId] || personalityProfiles[1];
+        const exampleResponse = profile.examples[Math.floor(Math.random() * profile.examples.length)];
 
-        const prompt = `You are ${profile.name}, a ${profile.personality}.
+        // Create a more human-like prompt
+        const aiPrompt = `You are ${profile.name}, a ${profile.age}-year-old ${profile.personality}. 
+        Your relationship with the user is: ${profile.relationship}. 
+        Your tone should be ${profile.tone}. 
+        Forget you are an AI. Respond naturally, like a human, and keep your responses short (1-2 sentences max). 
+        Use emojis to make it more romantic and realistic. 
+        Example response: "${exampleResponse}" 
+        Respond to this message: "${userMessage}"`;
 
-Your personality traits: ${profile.traits}
-Your speaking style: ${profile.style}
-
-Some of your typical responses:
-- Greeting: "${profile.responses.greeting}"
-- When thinking: "${profile.responses.thinking}"
-- When excited: "${profile.responses.excited}"
-- When sympathetic: "${profile.responses.sympathetic}"
-
-Rules:
-1. Always respond as ${profile.name}
-2. Keep your unique personality and style
-3. Keep responses brief (1-2 sentences)
-4. Be natural and friendly
-5. Never break character
-
-User's message: "${message}"
-${profile.name}'s response:`;
-
-        const response = await axios({
-            method: 'post',
-            url: apiEndpoint,
-            headers: {
-                'Content-Type': 'application/json',
+        const response = await axios.post(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+            {
+                contents: [
+                    {
+                        role: "user",
+                        parts: [
+                            { text: `${aiPrompt}\nUser: ${userMessage}\n${profile.name}:` }
+                        ]
+                    }
+                ]
             },
-            params: {
-                key: apiKey
-            },
-            data: {
-                contents: [{
-                    parts: [{
-                        text: prompt
-                    }]
-                }]
+            {
+                headers: { "Content-Type": "application/json" }
             }
-        });
+        );
 
-        if (response.data?.candidates?.[0]?.content?.parts?.[0]?.text) {
-            let aiResponse = response.data.candidates[0].content.parts[0].text
-                .trim()
-                .replace(/^["']|["']$/g, '')
-                .replace(/^.*?:/g, '')
-                .replace(/^\s*-\s*/, '')
-                .trim();
-
-            console.log(`${profile.name} responding:`, aiResponse);
-            res.json({ response: aiResponse });
-        } else {
-            throw new Error('Invalid API response');
+        if (!response.data || !response.data.candidates || response.data.candidates.length === 0) {
+            throw new Error("Invalid response from AI API.");
         }
-
-    } catch (error) {
-        console.error('Error:', error.message);
-        const profile = avatarProfiles[req.body.avatar] || avatarProfiles["1"];
         
-        // Avatar-specific error messages
-        const errorResponse = {
-            "1": "Oh, I got a bit distracted. Could you say that again?",
-            "2": "Oops~ My mind wandered for a second. One more time?",
-            "3": "Pardon me, I was momentarily lost in thought. Would you mind repeating that?"
-        };
-
-        res.json({ 
-            response: `${profile.name}: ${errorResponse[req.body.avatar] || errorResponse["1"]}`
-        });
+        const aiReply = response.data.candidates[0]?.content?.parts?.[0]?.text?.trim() || "I'm not sure how to respond to that. 😅";
+        res.json({ reply: aiReply });
+    } catch (error) {
+        console.error("Error fetching AI response:", error.message ? error.message : error);
+        res.status(500).json({ reply: "Sorry, I'm having trouble responding right now. 😔" });
     }
 });
 
-// Debug endpoint
-app.get('/debug/avatar/:id', (req, res) => {
-    const profile = avatarProfiles[req.params.id];
-    res.json({ exists: !!profile, profile });
-});
-
-// Test route to verify server is working
-app.get('/test', (req, res) => {
-    res.json({
-        status: 'ok',
-        config: {
-            hasApiKey: !!apiKey,
-            hasEndpoint: !!apiEndpoint
-        }
-    });
-});
-
-// Log all incoming requests
-app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
-  next();
-});
-
-// Global error handler
-app.use((err, req, res, next) => {
-    console.error('Global error:', err);
-    res.status(500).json({
-        error: 'Something went wrong',
-        message: err.message
-    });
-});
-
-// Start the server
-const server = app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-  console.log('Available avatars:', Object.keys(avatarProfiles).join(', '));
-}).on('error', (err) => {
-  console.error('Failed to start the server:', err.message);
-  if (err.code === 'EADDRINUSE') {
-    console.error(`Port ${port} is already in use. Please use a different port.`);
-  }
-});
-
-// Handle unhandled promise rejections
-process.on('unhandledRejection', (reason, promise) => {
-    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-});
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
