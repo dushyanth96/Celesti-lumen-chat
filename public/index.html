@@ -55,6 +55,7 @@
             margin-top: 0;
             margin-bottom: 40px;
             color: #cccccc;
+            text-align: center;
         }
         
         h2 {
@@ -160,10 +161,51 @@
             padding: 20px;
             font-size: 0.9rem;
             color: #888888;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1000px;
         }
-        
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            color: #888888;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #ffffff;
+        }
+
         .heart {
             color: #ff4d4d;
+        }
+
+        .feedback-btn {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+
+        .feedback-btn:hover {
+            background-color: #e04444;
+        }
+        .footerlast{
+            text-align: center;
+            font-size: 0.9rem;
+            color: #888888;
+            margin-top: 20px;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -208,8 +250,15 @@
     </div>
     
     <footer>
+        <div class="footer-links">
+            <a href="pages/aboutus.html">About Us</a>
+            <a href="pages/termsandconditions.html">Terms & Conditions</a>
+            <a href="pages/privacypolicy.html">Privacy Policy</a>
+        </div>
         CelestiLumen v1.0 • Created with <span class="heart">❤</span>
+        <button class="feedback-btn" onclick="window.location.href='pages/feedback.html'">Give Feedback</button>
     </footer>
+    
 
     <script>
         function selectAvatar(name, imageClass) {
