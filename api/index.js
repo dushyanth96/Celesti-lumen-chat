@@ -37,7 +37,7 @@ const app = express();
 // Add CORS middleware
 app.use((req, res, next) => {
     const allowedOrigins = [
-        'https://dushyanth96.github.io',
+        'https://celestilumen-oys5jzb58-dushyanth96s-projects.vercel.app',
         'http://localhost:8000'
     ];
     const origin = req.headers.origin;
