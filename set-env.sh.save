@@ -1,0 +1,19 @@
+# Make it executable
+chmod +x set-env.sh
+# Source the environment variables
+source ./set-env.sh
+# Verify the environment variables are set
+printenv | grep GEMINI
+
+
+
+
+
+
+
+
+
+
+
+
+

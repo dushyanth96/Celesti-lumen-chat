@@ -311,3 +311,4 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatManager = new ChatManager();
     console.log("ChatManager initialized:", chatManager); // Debugging
 });
+

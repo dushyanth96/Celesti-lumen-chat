@@ -5,7 +5,7 @@ const path = require('path');
 const app = express();
 
 // Serve static files from the public directory
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.json()); // Enable JSON parsing
 
 // Personality profiles for each avatar
@@ -49,7 +49,7 @@ const personalityProfiles = {
 };
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, '../public', 'index.html'));
 });
 
 app.post('/api/generate', async (req, res) => {
