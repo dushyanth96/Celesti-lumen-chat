@@ -14,7 +14,7 @@ if (result.error) {
 
 // Add environment variables validation with detailed logging
 console.log('Checking environment variables...');
-const requiredEnvVars = ['GEMINI_API_KEY', 'GEMINI_API_ENDPOINT'];
+const requiredEnvVars = ['GEMINI_API_KEY', 'GEMINI_API_ENDPOINT', 'OPENAI_API_KEY'];
 const missingEnvVars = requiredEnvVars.filter(envVar => {
     const value = process.env[envVar];
     if (!value) {
@@ -29,6 +29,8 @@ if (missingEnvVars.length > 0) {
     console.error('Missing required environment variables:', missingEnvVars);
     process.exit(1);
 }
+
+console.log('OPENAI_API_KEY:', process.env.OPENAI_API_KEY ? 'Loaded' : 'Not Loaded');
 
 const express = require('express');
 const axios = require('axios');
@@ -194,6 +196,56 @@ app.post('/api/generate', async (req, res) => {
             reply: "Sorry, I encountered an error while processing your request. 😔",
             error: error.message
         });
+    }
+});
+
+// Endpoint to handle chat requests
+app.post('/api/chat', async (req, res) => {
+    const { message } = req.body;
+
+    if (!message) {
+        return res.status(400).json({ error: 'Message is required' });
+    }
+
+    try {
+        // Attempt to use OpenAI API with GPT-3.5 model
+        if (process.env.OPENAI_API_KEY) {
+            const openaiResponse = await axios.post(
+                'https://api.openai.com/v1/chat/completions',
+                {
+                    model: 'gpt-3.5-turbo', // Use GPT-3.5 model
+                    messages: [{ role: 'user', content: message }],
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            return res.json({ reply: openaiResponse.data.choices[0].message.content });
+        }
+
+        // Fallback to Gemini API if OpenAI is unavailable
+        if (process.env.GEMINI_API_KEY) {
+            const geminiResponse = await axios.post(
+                process.env.GEMINI_API_ENDPOINT,
+                { message },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${process.env.GEMINI_API_KEY}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            return res.json({ reply: geminiResponse.data.reply });
+        }
+
+        // If no API keys are available
+        return res.status(500).json({ error: 'No available API keys for processing the request' });
+    } catch (error) {
+        console.error('Error processing chat request:', error.message);
+        return res.status(500).json({ error: 'Failed to process the request' });
     }
 });
 
