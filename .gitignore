@@ -32,5 +32,7 @@ coverage
 Thumbs.db
 node_modules
 .vercel
-#Scripts
+
+# Scripts
 .envgit rm --cached /workspaces/Celesti-lumen-chat/.env
+set-env.sh
