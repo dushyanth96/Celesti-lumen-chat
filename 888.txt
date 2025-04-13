@@ -1,0 +1,8 @@
+PORT=8000
+
+# AI API Configuration (for future implementation)
+GEMINI_API_KEY=AIzaSyDjlXxSUDqUKVWXMTZ-sveZN2FkrTzCDUc
+GEMINI_API_ENDPOINT=https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent
+
+
+OPENAI_API_KEY=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
