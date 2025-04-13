@@ -171,9 +171,20 @@ class ChatManager {
     }
 
     async getAIResponse(message) {
+        // Extract the last 5 exchanges without emojis
+        const messages = Array.from(this.chatMessages.children)
+            .slice(-10) // Get the last 10 messages (5 user + 5 AI)
+            .map(msg => ({
+                content: msg.textContent.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, ''), // Remove emojis
+                sender: msg.classList.contains('user') ? 'user' : 'ai'
+            }));
+
+        const lastFiveExchanges = messages.slice(-5); // Keep only the last 5 exchanges
+
         const payload = {
             avatarId: this.selectedAvatar.id,
-            userMessage: message
+            userMessage: message,
+            context: lastFiveExchanges // Include the context in the payload
         };
         console.log("Sending payload:", payload); // Debugging
 

@@ -101,10 +101,10 @@ app.get('/', (req, res) => {
 
 app.post('/api/generate', async (req, res) => {
     try {
-        const { avatarId, userMessage } = req.body;
+        const { avatarId, userMessage, context } = req.body;
 
         // Log incoming request
-        console.log('Received request:', { avatarId, userMessage });
+        console.log('Received request:', { avatarId, userMessage, context });
 
         // Validate input
         if (!avatarId || typeof avatarId !== 'number') {
@@ -115,10 +115,15 @@ app.post('/api/generate', async (req, res) => {
             console.error('Invalid userMessage:', userMessage);
             return res.status(400).json({ reply: 'Invalid message provided' });
         }
+        if (!Array.isArray(context)) {
+            console.error('Invalid context:', context);
+            return res.status(400).json({ reply: 'Invalid context provided' });
+        }
 
-        // Log environment variables (masked for security)
-        console.log('Using API endpoint:', process.env.GEMINI_API_ENDPOINT);
-        console.log('API key present:', !!process.env.GEMINI_API_KEY);
+        // Prepare the context string
+        const contextString = context
+            .map(msg => `${msg.sender === 'user' ? 'User' : 'AI'}: ${msg.content}`)
+            .join('\n');
 
         const profile = personalityProfiles[avatarId] || personalityProfiles[1];
         const exampleResponse = profile.examples[Math.floor(Math.random() * profile.examples.length)];
@@ -128,9 +133,8 @@ app.post('/api/generate', async (req, res) => {
         Your relationship with the user is: ${profile.relationship}. 
         Your tone should be ${profile.tone}. 
         Forget you are an AI. Respond naturally, like a human, and keep your responses short (1-2 sentences max). 
-        Use emojis to make it more romantic and realistic. 
         Example response: "${exampleResponse}" 
-        Respond to this message: "${userMessage}"`;
+        Context:\n${contextString}\nRespond to this message: "${userMessage}"`;
 
         // Make API request with error handling
         const response = await axios({
