@@ -32,3 +32,6 @@ coverage
 Thumbs.db
 node_modules
 .vercel
+
+# Scripts
+set-env.sh
