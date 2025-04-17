@@ -200,12 +200,14 @@
             const message = messageInput.value.trim();
             if (!message) return;
 
-            const relationshipStatus = localStorage.getItem('relationshipStatus') || 'friend';
+            // Ensure relationship status is retrieved correctly
+            const relationshipSelect = document.getElementById('relationshipStatus');
+            const relationshipStatus = relationshipSelect ? relationshipSelect.value : 'friend';
             const avatarData = JSON.parse(localStorage.getItem('selectedAvatar') || '{}');
 
             const payload = {
                 message,
-                relationshipStatus,
+                relationshipStatus, // Include relationship status in the payload
                 avatarId: avatarData.id || null,
             };
 
