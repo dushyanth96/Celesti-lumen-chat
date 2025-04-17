@@ -6,6 +6,31 @@
     <title>Chat with CelestiLumen</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Dropdown Box Styles */
+        .relationship-select {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #888888;
+            border-radius: 5px;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            appearance: none;
+            outline: none;
+            transition: border-color 0.3s, background-color 0.3s;
+        }
+
+        .relationship-select:focus {
+            border-color: #4169e1;
+            background-color: #2a2a2a;
+        }
+
+        .relationship-select option {
+            background-color: #1e1e1e;
+            color: #ffffff;
+        }
+    </style>
 </head>
 <body class="dark-theme chat-page">
     <div class="chat-container">
@@ -103,6 +128,18 @@
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h3>Relationship Status</h3>
+                        <p>Define your relationship with the AI</p>
+                    </div>
+                    <select id="relationshipStatus" class="relationship-select">
+                        <option value="friend">Friend</option>
+                        <option value="best_friend">Best Friend</option>
+                        <option value="lover">Lover</option>
+                        <option value="romance_talker">Romance Talker</option>
+                    </select>
+                </div>
             </div>
         </div>
     </div>
@@ -140,6 +177,53 @@
                     console.error('Error initializing avatar UI:', error);
                 }
             }
+
+            // Load saved relationship status from localStorage
+            const savedStatus = localStorage.getItem('relationshipStatus');
+            const relationshipSelect = document.getElementById('relationshipStatus');
+            if (savedStatus && relationshipSelect) {
+                relationshipSelect.value = savedStatus;
+            }
+
+            // Save relationship status to localStorage on change
+            if (relationshipSelect) {
+                relationshipSelect.addEventListener('change', function() {
+                    localStorage.setItem('relationshipStatus', relationshipSelect.value);
+                });
+            }
+        });
+
+        // Send message to API with relationship status
+        const sendButton = document.getElementById('sendButton');
+        const messageInput = document.getElementById('messageInput');
+        sendButton.addEventListener('click', function() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            const relationshipStatus = localStorage.getItem('relationshipStatus') || 'friend';
+            const avatarData = JSON.parse(localStorage.getItem('selectedAvatar') || '{}');
+
+            const payload = {
+                message,
+                relationshipStatus,
+                avatarId: avatarData.id || null,
+            };
+
+            // Example API call (replace with actual API endpoint)
+            fetch('https://api.celestilumen.com/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('API Response:', data);
+                // Handle response (e.g., display AI's reply in chat)
+            })
+            .catch(error => console.error('Error sending message:', error));
+
+            // Clear input field
+            messageInput.value = '';
         });
     </script>
 </body>
