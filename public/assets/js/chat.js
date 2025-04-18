@@ -45,15 +45,28 @@ class ChatManager {
     }
 
     setupEventListeners() {
-        this.sendButton.addEventListener('click', () => this.sendMessage());
-        this.messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                this.sendMessage();
-            }
-        });
-        this.messageInput.addEventListener('input', this.adjustTextareaHeight.bind(this));
-        this.clearHistoryBtn.addEventListener('click', () => this.clearChatHistory());
+        if (this.sendButton) {
+            this.sendButton.addEventListener('click', () => {
+                const message = this.messageInput.value.trim();
+                if (message) {
+                    this.sendMessage(); // Call sendMessage to process the message
+                }
+            });
+        }
+
+        if (this.messageInput) {
+            this.messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    this.sendMessage();
+                }
+            });
+            this.messageInput.addEventListener('input', this.adjustTextareaHeight.bind(this));
+        }
+
+        if (this.clearHistoryBtn) {
+            this.clearHistoryBtn.addEventListener('click', () => this.clearChatHistory());
+        }
         
         // Add event listener for back to avatars button
         const backToAvatarsBtn = document.getElementById('backToAvatarsBtn');
@@ -120,6 +133,8 @@ class ChatManager {
 
         // Add user message to chat
         this.addMessage(message, 'user');
+
+        // Clear the input field only after adding the message
         this.messageInput.value = '';
         this.adjustTextareaHeight();
 
@@ -303,7 +318,17 @@ class ChatManager {
         } else {
             this.clearChatDisplay();
         }
-        
+
+        // Automatically send relationship status to the API
+        const relationshipStatusMessage = `What is the relationship status of ${this.selectedAvatar.name}?`;
+        this.addMessage(relationshipStatusMessage, 'user');
+        this.getAIResponse(relationshipStatusMessage)
+            .then(response => this.addMessage(response, 'ai'))
+            .catch(error => {
+                console.error('Error getting relationship status:', error);
+                this.addMessage('Sorry, I could not retrieve the relationship status.', 'ai');
+            });
+
         // Update UI elements
         if (typeof updateAvatarUI === 'function') {
             updateAvatarUI(this.selectedAvatar);
