@@ -267,28 +267,6 @@
                 });
             }
         });
-
-        // Generate image using Flux model
-        const generateImageButton = document.getElementById('generateImageButton');
-
-        generateImageButton.addEventListener('click', function() {
-            const prompt = messageInput.value.trim();
-            if (!prompt) return;
-
-            const avatarData = JSON.parse(localStorage.getItem('selectedAvatar') || '{}');
-            const relationshipStatus = localStorage.getItem('relationshipStatus') || 'friend';
-
-            const payload = {
-                prompt: ` ${prompt} and mainly your relationshipstatus wtih user is described by the word {relationshipStatus}`, // Include relationship status in the prompt
-                avatarId: avatarData.id || null,
-            };
-
-            // Example API call for image generation (replace with actual API endpoint)
-           
-
-            // Clear input field
-            messageInput.value = '';
-        });
     </script>
 </body>
 </html>
