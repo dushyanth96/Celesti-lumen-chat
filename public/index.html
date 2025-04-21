@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
+    <title>CelestiLumen – Free AI Chat with Avatars</title>
+    <meta name="title" content="CelestiLumen – Your AI Companion">
+    <meta name="description" content="Chat with AI avatars in real-time! Experience free AI conversation with different personality-based characters.">
+    <meta name="keywords" content="AI chat, virtual companions, AI avatars, free chatbot, AI conversation, personal AI assistant,celesti lumen , celestilumen , celesti lumen ai, celesti lumen chat, celesti lumen chatbot, celesti lumen avatars, celesti lumen free ai chat">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="author" content="CelestiLumen">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="CelestiLumen – Free AI Chat with Avatars">
+    <meta property="og:description" content="Chat with AI avatars in real-time! Experience free AI conversation with different personality-based characters.">
+    <meta property="og:image" content="https://res.cloudinary.com/dpkrgmzxe/image/upload/v1744529706/ChatGPT_Image_Apr_13_2025_01_02_13_PM_kjqubr.png">
+    <meta property="og:url" content="https://celestilumen.vercel.app">
+    <meta property="og:site_name" content="CelestiLumen">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="CelestiLumen – Free AI Chat with Avatars">
+    <meta name="twitter:description" content="Chat with AI avatars in real-time! Experience free AI conversation with different personality-based characters.">
+    <meta name="twitter:image" content="https://res.cloudinary.com/dpkrgmzxe/image/upload/v1742021584/celestilumen-twitter-card.jpg">
+    <meta name="twitter:site" content="@CelestiLumen">
+    <meta name="twitter:creator" content="@CelestiLumen">
+
+    <!-- Favicon -->
+    <link rel="icon" href="https://res.cloudinary.com/dpkrgmzxe/image/upload/v1744529706/ChatGPT_Image_Apr_13_2025_01_02_13_PM_kjqubr.png" type="image/x-icon">
+
+    <!-- Resource Hints -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+    <link rel="dns-prefetch" href="https://res.cloudinary.com">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* Base Styles */
+        body {
+            margin: 0;
+            background: #121212;
+            font-family: 'Poppins', sans-serif;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            opacity: 0;
+            animation: fadeIn 0.3s ease-in forwards;
+        }
+
+        /* Typography */
+        h1.glow-text {
+            font-size: 3.5rem;
+            text-align: center;
+            background: linear-gradient(90deg, #E6A8D7, #9370DB);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: glow 2s ease-in-out infinite alternate;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-top: 0;
+            margin-bottom: 40px;
+            color: #cccccc;
+            text-align: center;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            text-align: left;
+            margin-left: 20px;
+            color: #E6A8D7;
+        }
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            text-align: left;
+            margin-left: 20px;
+            color: #E6A8D7;
+        }
+
+        /* Avatar Grid */
+        .avatar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 20px;
+            content-visibility: auto;
+        }
+
+        .avatar-card {
+            background: #1e1e1e;
+            border-radius: 15px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .avatar-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .avatar-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid transparent;
+            background: linear-gradient(#1e1e1e, #1e1e1e) padding-box,
+                        linear-gradient(90deg, #E6A8D7, #9370DB) border-box;
+        }
+
+        .avatar-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Buttons */
+        .select-btn {
+            background-color: #4169e1;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .select-btn:hover {
+            background-color: #3a5fcd;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            color: #888888;
+            width: 100%;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .footer-text {
+            margin: 0;
+            margin-bottom: 60px;
+            text-align: center;
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            padding: 0 20px;
+            background: transparent;
+            
+            z-index: 99;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .footer-links a {
+            color: #888888;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #ffffff;
+        }
+
+        .heart {
+            color: #ff4d4d;
+        }
+
+        .feedback-btn {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            cursor: pointer;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 5px rgba(230, 168, 215, 0.3); }
+            to { text-shadow: 0 0 15px rgba(230, 168, 215, 0.7), 
+                            0 0 20px rgba(147, 112, 219, 0.5); }
+        }
+
+        /* Media Queries */
+        @media screen and (max-width: 768px) {
+            h1.glow-text { font-size: 2.5rem; }
+            .avatar-grid { padding: 10px; }
+            .feedback-btn {
+                position: static;
+                width: 100%;
+                max-width: 200px;
+                margin: 10px auto;
+            }
+
+            .footer-bottom {
+                position: static;
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px;
+                background: none;
+                backdrop-filter: none;
+            }
+
+            .footer-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+            }
+
+            .feedback-btn {
+                position: static;
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+        .ads{
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="glow-text">CelestiLumen</h1>
+        <p class="subtitle">Your AI Companion</p>
+        <h2>Welcome to CelestiLumen</h2>
+        <p>Experience meaningful conversations with your AI companion. Choose from three unique personalities and start chatting right away!</p>
+        
+        <h3>Choose Your Companion</h3>
+        
+        <div class="avatar-grid">
+            <!-- Luna Avatar Card -->
+            <div class="avatar-card">
+                <div class="avatar-image">
+                    <img src="https://res.cloudinary.com/dpkrgmzxe/image/upload/v1742021584/Luna_c1suja.jpg" 
+                         alt="Luna" loading="lazy">
+                </div>
+                <h4>Luna</h4>
+                <p>18 years old • Friendly & Caring</p>
+                <button class="select-btn" data-name="Luna" data-image="luna-avatar">Select Luna</button>
+            </div>
+
+            <!-- Stella Avatar Card -->
+            <div class="avatar-card">
+                <div class="avatar-image">
+                    <img src="https://res.cloudinary.com/dpkrgmzxe/image/upload/v1742021584/Stella_w1gp8f.jpg" 
+                         alt="Stella" loading="lazy">
+                </div>
+                <h4>Stella</h4>
+                <p>20 years old • Charming & Flirty</p>
+                <button class="select-btn" data-name="Stella" data-image="stella-avatar">Select Stella</button>
+            </div>
+
+            <!-- Aurora Avatar Card -->
+            <div class="avatar-card">
+                <div class="avatar-image">
+                    <img src="https://res.cloudinary.com/dpkrgmzxe/image/upload/v1742021584/Aurora_mcbyn1.jpg" 
+                         alt="Aurora" loading="lazy">
+                </div>
+                <h4>Aurora</h4>
+                <p>22 years old • Mature & Romantic</p>
+                <button class="select-btn" data-name="Aurora" data-image="aurora-avatar">Select Aurora</button>
+            </div>
+
+            <!-- Orion Avatar Card -->
+            <div class="avatar-card">
+                <div class="avatar-image">
+                    <img src="https://res.cloudinary.com/dpkrgmzxe/image/upload/v1742021584/Orion.jpg" 
+                         alt="Orion" loading="lazy">
+                </div>
+                <h4>Orion</h4>
+                <p>21 years old • Calm & Introspective</p>
+                <button class="select-btn" data-name="Orion" data-image="orion-avatar">Select Orion</button>
+            </div>
+
+            <!-- Zayn Avatar Card -->
+            <div class="avatar-card">
+                <div class="avatar-image">
+                    <img src="https://res.cloudinary.com/dpkrgmzxe/image/upload/v1742021584/Zayn.jpg" 
+                         alt="Zayn" loading="lazy">
+                </div>
+                <h4>Zayn</h4>
+                <p>20 years old • Confident & Playful</p>
+                <button class="select-btn" data-name="Zayn" data-image="zayn-avatar">Select Zayn</button>
+            </div>
+
+            <!-- Kael Avatar Card -->
+            <div class="avatar-card">
+                <div class="avatar-image">
+                    <img src="https://res.cloudinary.com/dpkrgmzxe/image/upload/v1742021584/Kael.jpg" 
+                         alt="Kael" loading="lazy">
+                </div>
+                <h4>Kael</h4>
+                <p>22 years old • Driven & Protective</p>
+                <button class="select-btn" data-name="Kael" data-image="kael-avatar">Select Kael</button>
+            </div>
+        </div>
+    </div>
+    <div class="ads">
+        <script type="text/javascript">
+            if (typeof atAsyncOptions !== 'object') var atAsyncOptions = [];
+            atAsyncOptions.push({
+                'key': '106c8cd099db26d754e91d8ed6aeef15',
+                'format': 'js',
+                'async': true,
+                'container': 'atContainer-106c8cd099db26d754e91d8ed6aeef15',
+                'params' : {}
+            });
+            var script = document.createElement('script');
+            script.type = "text/javascript";
+            script.async = true;
+            script.src = 'http' + (location.protocol === 'https:' ? 's' : '') + '://similardeeperdecent.com/106c8cd099db26d754e91d8ed6aeef15/invoke.js';
+            document.getElementsByTagName('head')[0].appendChild(script);
+        </script>
+      
+        <div id="atContainer-106c8cd099db26d754e91d8ed6aeef15"></div>
+        <script type="text/javascript">
+            atOptions = {
+                'key' : '106c8cd099db26d754e91d8ed6aeef15',
+                'format' : 'iframe',
+                'height' : 60,
+                'width' : 468,
+                'params' : {}
+            };
+        </script>
+        <script type="text/javascript" src="//similardeeperdecent.com/106c8cd099db26d754e91d8ed6aeef15/invoke.js"></script>
+</div>
+    <footer>
+        <div class="footer-container">
+            <p class="footer-text">CelestiLumen v1.0 • Created with <span class="heart">❤</span></p>
+            <div class="footer-bottom">
+                <div class="footer-links">
+                    <a href="pages/aboutus.html">About Us</a>
+                    <a href="pages/termsandconditions.html">Terms & Conditions</a>
+                    <a href="pages/privacypolicy.html">Privacy Policy</a>
+                </div>
+                <button class="feedback-btn" onclick="window.location.href='pages/feedback.html'">Give Feedback</button>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function selectAvatar(name, imageClass) {
+            const id = { Luna: 1, Stella: 2, Aurora: 3, Orion: 4, Zayn: 5, Kael: 6 }[name];
+            const avatar = { id, name, imageClass };
+            localStorage.setItem('selectedAvatar', JSON.stringify(avatar));
+            window.location.href = 'pages/chat.html';
+        }
+
+        document.querySelectorAll('.select-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const name = e.target.getAttribute('data-name');
+                const imageClass = e.target.getAttribute('data-image');
+                selectAvatar(name, imageClass);
+            });
+        });
+    </script>
+</body>
+</html>
