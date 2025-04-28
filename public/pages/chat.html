@@ -37,7 +37,7 @@
     <div class="chat-container">
         <header class="chat-header">
             <div class="avatar-info">
-                <div class="selected-avatar-image luna-avatar orion-avatar zayn-avatar kael-avatar"></div>
+                <div class="selected-avatar-image"></div>
                 <div class="avatar-details">
                     <h2 id="avatarName">Luna</h2>
                     <p id="avatarStatus">Online</p>
@@ -169,7 +169,7 @@
                     const avatarImageElement = document.querySelector('.selected-avatar-image');
                     if (avatarImageElement) {
                         // Remove existing avatar classes
-                        avatarImageElement.classList.remove('luna-avatar', 'stella-avatar', 'aurora-avatar');
+                        avatarImageElement.classList.remove('luna-avatar', 'stella-avatar', 'aurora-avatar', 'orion-avatar', 'zayn-avatar', 'kael-avatar');
                         
                         // Add the correct avatar class based on the name
                         const imageClass = avatar.imageClass || `${avatar.name.toLowerCase()}-avatar`;

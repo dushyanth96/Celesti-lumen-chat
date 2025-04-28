@@ -111,6 +111,18 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             transition: transform 0.3s, box-shadow 0.3s;
         }
+        
+        /* Center the text in avatar cards */
+        .avatar-card h4 {
+            text-align: center;
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+        
+        .avatar-card p {
+            text-align: center;
+            margin-bottom: 15px;
+        }
 
         .avatar-card:hover {
             transform: translateY(-5px);
@@ -295,7 +307,7 @@
                          alt="Luna" loading="lazy">
                 </div>
                 <h4>Luna</h4>
-                <p>18 years old • Friendly & Caring</p>
+                <p>18 years old • Female • Friendly & Caring</p>
                 <button class="select-btn" data-name="Luna" data-image="luna-avatar">Select Luna</button>
             </div>
 
@@ -306,7 +318,7 @@
                          alt="Stella" loading="lazy">
                 </div>
                 <h4>Stella</h4>
-                <p>20 years old • Charming & Flirty</p>
+                <p>20 years old • Female • Charming & Flirty</p>
                 <button class="select-btn" data-name="Stella" data-image="stella-avatar">Select Stella</button>
             </div>
 
@@ -317,40 +329,40 @@
                          alt="Aurora" loading="lazy">
                 </div>
                 <h4>Aurora</h4>
-                <p>22 years old • Mature & Romantic</p>
+                <p>22 years old • Female • Mature & Romantic</p>
                 <button class="select-btn" data-name="Aurora" data-image="aurora-avatar">Select Aurora</button>
             </div>
 
             <!-- Orion Avatar Card -->
             <div class="avatar-card">
                 <div class="avatar-image">
-                    <img src="https://res.cloudinary.com/dpkrgmzxe/image/upload/v1742021584/Orion.jpg" 
+                    <img src="https://res.cloudinary.com/dpkrgmzxe/image/upload/v1745500892/raw_gerl0g.png" 
                          alt="Orion" loading="lazy">
                 </div>
                 <h4>Orion</h4>
-                <p>21 years old • Calm & Introspective</p>
+                <p>21 years old • Male • Calm & Introspective</p>
                 <button class="select-btn" data-name="Orion" data-image="orion-avatar">Select Orion</button>
             </div>
 
             <!-- Zayn Avatar Card -->
             <div class="avatar-card">
                 <div class="avatar-image">
-                    <img src="https://res.cloudinary.com/dpkrgmzxe/image/upload/v1742021584/Zayn.jpg" 
+                    <img src="https://res.cloudinary.com/dpkrgmzxe/image/upload/v1745500914/raw_dw0vwp.png" 
                          alt="Zayn" loading="lazy">
                 </div>
                 <h4>Zayn</h4>
-                <p>20 years old • Confident & Playful</p>
+                <p>20 years old • Male • Confident & Playful</p>
                 <button class="select-btn" data-name="Zayn" data-image="zayn-avatar">Select Zayn</button>
             </div>
 
             <!-- Kael Avatar Card -->
             <div class="avatar-card">
                 <div class="avatar-image">
-                    <img src="https://res.cloudinary.com/dpkrgmzxe/image/upload/v1742021584/Kael.jpg" 
+                    <img src="https://res.cloudinary.com/dpkrgmzxe/image/upload/v1745500928/raw_zybm1u.png" 
                          alt="Kael" loading="lazy">
                 </div>
                 <h4>Kael</h4>
-                <p>22 years old • Driven & Protective</p>
+                <p>22 years old • Male • Driven & Protective</p>
                 <button class="select-btn" data-name="Kael" data-image="kael-avatar">Select Kael</button>
             </div>
         </div>
@@ -398,8 +410,10 @@
 
     <script>
         function selectAvatar(name, imageClass) {
-            const id = { Luna: 1, Stella: 2, Aurora: 3, Orion: 4, Zayn: 5, Kael: 6 }[name];
-            const avatar = { id, name, imageClass };
+            const idMap = { Luna: 1, Stella: 2, Aurora: 3, Orion: 4, Zayn: 5, Kael: 6 };
+            const genderMap = { Luna: 'female', Stella: 'female', Aurora: 'female', Orion: 'male', Zayn: 'male', Kael: 'male' };
+            const id = idMap[name];
+            const avatar = { id, name, gender: genderMap[name], imageClass };
             localStorage.setItem('selectedAvatar', JSON.stringify(avatar));
             window.location.href = 'pages/chat.html';
         }
